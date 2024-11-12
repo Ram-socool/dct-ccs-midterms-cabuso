@@ -2,17 +2,17 @@
 // Start the session
 session_start();
 
-// Include the functions file to use session management and other helper functions
+// Include the functions file
 include('functions.php');
 
-// Check if the user is logged in by verifying the session
+// Check if the user is logged in
 if (!isset($_SESSION['email']) || empty($_SESSION['email'])) {
     // If not logged in, redirect to the login page
     header("Location: index.php");
     exit();
 }
 
-// User email is stored in the session after successful login
+// Retrieve the logged-in user's email
 $user_email = $_SESSION['email'];
 ?>
 
