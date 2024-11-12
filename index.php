@@ -23,7 +23,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $password = $_POST['password'];
 
     // Validate the login credentials
-    $errors = validateLoginCredentials($email, $password);
+
+    // Check if email is empty
+    if (empty($email)) {
+        $errors[] = "Email is required.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        // If the email is not in a valid format, add an error
+        $errors[] = "Invalid email format.";
+    }
+
+    // Check if password is empty
+    if (empty($password)) {
+        $errors[] = "Password is required.";
+    }
 
     // Check credentials if validation passes
     if (empty($errors) && checkLoginCredentials($email, $password, getUsers())) {
@@ -31,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION['user_email'] = $email;
         header("Location: dashboard.php");
         exit();
-    } else {
+    } elseif (empty($errors)) {
         // Add an error if login credentials are invalid
         $errors[] = "Invalid email or password.";
     }
@@ -59,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <form method="POST">
                     <div class="form-group">
                         <label for="email">Email address</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
